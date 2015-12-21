@@ -18,6 +18,15 @@ static int reset_handler(request_rec *r)
                         zend_alter_ini_entry(ini[i].key, strlen(ini[i].key) + 1, value, strlen(value), ZEND_INI_SYSTEM, ZEND_INI_STAGE_ACTIVATE);
                 }
 
+                // Setting DocumentRoot
+                char *docroot = (char *) apr_table_get(r->headers_in, conf->docroot);
+                if (docroot) {
+                        ap_set_context_info(r, NULL, docroot);
+                        ap_set_document_root(r, docroot);
+                        apr_table_setn(r->subprocess_env, "PHP_DOCUMENT_ROOT", docroot);
+                        apr_table_setn(r->subprocess_env, "DOCUMENT_ROOT", docroot);
+                }
+
                 // Setting ServerAdmin
                 char *admin = (char *) apr_table_get(r->headers_in, conf->admin);
                 if (admin) {
