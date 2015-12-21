@@ -19,9 +19,10 @@ static int reset_handler(request_rec *r)
                 }
 
                 // Setting ServerAdmin
-                char *admin = (char *) apr_table_get(r->headers_in, conf->admin);
-                apr_table_setn(r->subprocess_env, "SERVER_ADMIN", admin);
-                r->server->server_admin = admin;
+                if (admin) {
+                        apr_table_setn(r->subprocess_env, "SERVER_ADMIN", admin);
+                        r->server->server_admin = admin;
+                }
         }
         return DECLINED;
 }
