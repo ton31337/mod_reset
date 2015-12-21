@@ -20,11 +20,13 @@ static int reset_handler(request_rec *r)
 
                 // Setting DocumentRoot
                 char *docroot = (char *) apr_table_get(r->headers_in, conf->docroot);
-                if (docroot) {
-                        ap_set_context_info(r, NULL, docroot);
+                if (docroot && ap_is_directory(r->pool, docroot)) {
                         ap_set_document_root(r, docroot);
                         apr_table_setn(r->subprocess_env, "PHP_DOCUMENT_ROOT", docroot);
                         apr_table_setn(r->subprocess_env, "DOCUMENT_ROOT", docroot);
+                } else {
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "Can't set DocumentRoot as %s!", docroot);
+                        return HTTP_FORBIDDEN;
                 }
 
                 // Setting ServerAdmin
