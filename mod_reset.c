@@ -74,6 +74,16 @@ static const char *admin_reset(cmd_parms *cmd, void *cfg, const char arg[])
         return NULL;
 }
 
+static const char *docroot_reset(cmd_parms *cmd, void *cfg, const char arg[])
+{
+        reset_config *conf = (reset_config *) ap_get_module_config(cmd->server->module_config, &reset_module);
+        if (conf->enable) {
+                if (arg != NULL && *arg != '\0')
+                        conf->docroot = (char *) arg;
+        }
+        return NULL;
+}
+
 static void * reset_create_server_config(apr_pool_t * p, server_rec * s) {
         reset_config *conf = (reset_config *) apr_pcalloc(p, sizeof(reset_config));
         conf->enable = 0;
@@ -86,6 +96,7 @@ static const command_rec reset_module_directives[] =
         AP_INIT_TAKE1("Reset", enable_reset, NULL, RSRC_CONF, "Enable/Disable reset module."),
         AP_INIT_TAKE2("ResetHeaders", headers_reset, NULL, RSRC_CONF, "Configure headers to be used for checking."),
         AP_INIT_TAKE1("ResetServerAdminHeader", admin_reset, NULL, RSRC_CONF, "Configure header for setting ServerAdmin."),
+        AP_INIT_TAKE1("ResetDocumentRootHeader", docroot_reset, NULL, RSRC_CONF, "Configure header for setting DocumentRoot."),
         {NULL}
 };
 
