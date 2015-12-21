@@ -1,3 +1,8 @@
+Overview
+=========
+The main idea is simple, just use this module together with reverse proxy in front of Apache. Set custom headers from reverse proxy and manage php.ini values, DocumentRoot, ServerName according to headers.
+For instance you set `ResetHeaders              "open_basedir"   "X-Document-Root"` and this will set `open_basedir` on the fly to value from `X-Document-Root` header.
+
 Compile
 ============
 ```
