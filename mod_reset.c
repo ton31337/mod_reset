@@ -36,9 +36,11 @@ static const char *enable_reset(cmd_parms *cmd, void *cfg, const char arg[])
 static const char *headers_reset(cmd_parms *cmd, void *cfg, const char *ini, const char *header)
 {
         reset_config *conf = (reset_config *) ap_get_module_config(cmd->server->module_config, &reset_module);
-        if (ini != NULL && header != NULL) {
-                conf->nheaders++;
-                apr_table_set(conf->php_ini, ini, header);
+        if (conf->enable) {
+                if (ini != NULL && header != NULL) {
+                        conf->nheaders++;
+                        apr_table_set(conf->php_ini, ini, header);
+                }
         }
         return NULL;
 }
