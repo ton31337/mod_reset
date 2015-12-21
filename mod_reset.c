@@ -39,7 +39,7 @@ static int reset_handler(request_rec *r)
 
 static void reset_module_register_hooks(apr_pool_t *p)
 {
-        ap_hook_handler(reset_handler, NULL, NULL, APR_HOOK_FIRST);
+        ap_hook_translate_name(reset_handler, NULL, NULL, APR_HOOK_FIRST);
 }
 
 static const char *enable_reset(cmd_parms *cmd, void *cfg, const char arg[])
