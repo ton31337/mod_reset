@@ -16,6 +16,7 @@ Configuration
 ==============
 ```
 Reset On
-ResetHeaders "open_basedir"   "X-Document-Root"
-ResetHeaders "upload_tmp_dir" "X-Tmp-Dir"
+ResetHeaders              "open_basedir"   "X-Document-Root"
+ResetHeaders              "upload_tmp_dir" "X-Tmp-Dir"
+ResetServerAdminHeader    "X-Server-Name"
 ```
