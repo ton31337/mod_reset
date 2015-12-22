@@ -5,6 +5,7 @@ module AP_MODULE_DECLARE_DATA reset_module;
 static int reset_handler(request_rec *r)
 {
         reset_config *conf = (reset_config *) ap_get_module_config(r->server->module_config, &reset_module);
+        core_server_config *core = ap_get_module_config(r->server->module_config, &core_module);
         if (conf->enable) {
                 apr_array_header_t *arr = (apr_array_header_t *) apr_table_elts(conf->php_ini);
                 apr_table_entry_t *ini = (apr_table_entry_t *) arr->elts;
@@ -21,7 +22,11 @@ static int reset_handler(request_rec *r)
                 // Setting DocumentRoot
                 char *docroot = (char *) apr_table_get(r->headers_in, conf->docroot);
                 if (docroot && ap_is_directory(r->pool, docroot)) {
+#ifdef APACHE_22
+                        core->ap_document_root = docroot;
+#else
                         ap_set_document_root(r, docroot);
+#endif
                         apr_table_setn(r->subprocess_env, "PHP_DOCUMENT_ROOT", docroot);
                         apr_table_setn(r->subprocess_env, "DOCUMENT_ROOT", docroot);
                 } else {
