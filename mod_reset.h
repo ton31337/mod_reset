@@ -1,12 +1,17 @@
 #define MODULE_NAME "reset"
 #define CORE_PRIVATE
 #include <ap_config.h>
+#include <php_version.h>
 #include <httpd.h>
 #include <http_config.h>
 #include <http_core.h>
 #include <http_log.h>
 #include <zend.h>
+#if PHP_MAJOR_VERSION >= 7
+#include <zend_sort.h>
+#else
 #include <zend_qsort.h>
+#endif
 #include <zend_API.h>
 #include <zend_ini.h>
 #include <zend_alloc.h>
