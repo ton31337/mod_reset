@@ -22,7 +22,16 @@ static int reset_handler(request_rec *r)
                         char *value = (char *) apr_table_get(r->headers_in, ini[i].val);
                         if (!value)
                                 continue;
+
+#if PHP_MAJOR_VERSION >= 7
+                        zend_string *key = zend_string_init(ini[i].key, strlen(ini[i].key) , 0);
+                        zend_string *val = zend_string_init(value, strlen(value), 0);
+                        zend_alter_ini_entry(key, val, ZEND_INI_SYSTEM, ZEND_INI_STAGE_ACTIVATE);
+                        zend_string_release(key);
+                        zend_string_release(val);
+#else
                         zend_alter_ini_entry(ini[i].key, strlen(ini[i].key) + 1, value, strlen(value), ZEND_INI_SYSTEM, ZEND_INI_STAGE_ACTIVATE);
+#endif
                 }
 
 #ifdef MOD_RUID2
