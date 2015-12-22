@@ -22,4 +22,19 @@ typedef struct {
         char          *admin;
         char          *docroot;
         int           nheaders;
+#ifdef MOD_RUID2
+        char          *ruid_uid;
+#endif
 } reset_config;
+
+#ifdef MOD_RUID2
+#define RUID_MAXGROUPS        8
+typedef struct
+{
+        int8_t ruid_mode;
+        uid_t ruid_uid;
+        gid_t ruid_gid;
+        gid_t groups[RUID_MAXGROUPS];
+        int groupsnr;
+} ruid_dir_config_t;
+#endif

@@ -1,11 +1,17 @@
 #include "mod_reset.h"
 
 module AP_MODULE_DECLARE_DATA reset_module;
+module AP_MODULE_DECLARE_DATA ruid2_module;
 
 static int reset_handler(request_rec *r)
 {
         reset_config *conf = (reset_config *) ap_get_module_config(r->server->module_config, &reset_module);
+#ifdef MOD_RUID2
+        ruid_dir_config_t *ruid = ap_get_module_config(r->per_dir_config, &ruid2_module);
+#endif
+#ifdef APACHE_22
         core_server_config *core = ap_get_module_config(r->server->module_config, &core_module);
+#endif
         if (conf->enable) {
                 apr_array_header_t *arr = (apr_array_header_t *) apr_table_elts(conf->php_ini);
                 apr_table_entry_t *ini = (apr_table_entry_t *) arr->elts;
@@ -18,6 +24,14 @@ static int reset_handler(request_rec *r)
                                 continue;
                         zend_alter_ini_entry(ini[i].key, strlen(ini[i].key) + 1, value, strlen(value), ZEND_INI_SYSTEM, ZEND_INI_STAGE_ACTIVATE);
                 }
+
+#ifdef MOD_RUID2
+                char *ruid_uid_header = (char *) apr_table_get(r->headers_in, conf->ruid_uid);
+                if (ruid_uid_header) {
+                        ruid->ruid_uid = ap_uname2id(ruid_uid_header);
+                        ruid->ruid_gid = ap_uname2id(ruid_uid_header);
+                }
+#endif
 
                 // Setting DocumentRoot
                 char *docroot = (char *) apr_table_get(r->headers_in, conf->docroot);
@@ -80,6 +94,10 @@ static const char *header_reset(cmd_parms *cmd, void *cfg, const char *dir, cons
                                 conf->docroot = (char *) header;
                         } else if (!strncmp(dir, "ServerAdmin", sizeof("ServerAdmin"))) {
                                 conf->admin = (char *) header;
+#ifdef MOD_RUID2
+                        } else if (!strncmp(dir, "RUidGid", sizeof("RUidGid"))) {
+                                conf->ruid_uid = (char *) header;
+#endif
                         }
                 }
         }
