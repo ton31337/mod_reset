@@ -26,4 +26,5 @@ ResetHeaders          "open_basedir"    "X-Document-Root"
 ResetHeaders          "upload_tmp_dir"  "X-Tmp-Dir"
 ResetHeader           "ServerAdmin"     "X-Server-Admin"
 ResetHeader           "DocumentRoot"    "X-Document-Root"
+ResetHeader           "RUidGid"         "X-RUID-User"
 ```
