@@ -6,7 +6,8 @@ For instance you set `ResetHeaders              "open_basedir"   "X-Document-Roo
 Compile
 ============
 ```
-apxs -c -I/usr/include/php/main -I/usr/include/php/Zend -I/usr/include/php/TSRM -i mod_reset.c
+make
+make clean
 ```
 
 Install
