@@ -14,5 +14,5 @@ RUN git clone https://github.com/ton31337/mod_reset.git
 RUN cd mod_reset ; make
 
 RUN mkdir -p /root/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS,tmp}
-COPY apache24-php7.spec /root/rpmbuild/SPECS
-RUN rpmbuild -bb /root/rpmbuild/SPECS/apache24-php7.spec
+COPY apache24-php70.spec /root/rpmbuild/SPECS
+RUN rpmbuild -bb /root/rpmbuild/SPECS/apache24-php70.spec
