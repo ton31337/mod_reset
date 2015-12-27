@@ -1,6 +1,9 @@
 FROM centos:centos7
 MAINTAINER donatas.abraitis@gmail.com
 
+ARG GIT_COMMIT
+ARG BUILD_URL
+
 RUN yum install http://rpms.famillecollet.com/enterprise/remi-release-7.rpm -y
 
 RUN yum install epel-release -y
