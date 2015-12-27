@@ -1,6 +1,9 @@
 FROM akrasic/centos5
 MAINTAINER donatas.abraitis@gmail.com
 
+ARG GIT_COMMIT
+ARG BUILD_URL
+
 COPY utter.repo /etc/yum.repos.d
 RUN rpm --import http://yum.jasonlitka.com/RPM-GPG-KEY-jlitka
 
