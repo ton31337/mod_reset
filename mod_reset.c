@@ -1,7 +1,9 @@
 #include "mod_reset.h"
 
 module AP_MODULE_DECLARE_DATA reset_module;
+#ifdef MOD_RUID2
 module AP_MODULE_DECLARE_DATA ruid2_module;
+#endif
 
 static int reset_handler(request_rec *r)
 {
