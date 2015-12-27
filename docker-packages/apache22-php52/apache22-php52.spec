@@ -7,6 +7,8 @@ Group: Web
 License: GPL+
 
 %description
+* GIT_COMMIT: %{getenv:GIT_COMMIT}
+* BUILD_URL: %{getenv:BUILD_URL}
 
 %prep
 
