@@ -13,6 +13,6 @@ vzctl exec 53 wget -O /etc/sssd/sssd.conf http://repo.main-hosting.com/cloud/sss
 vzctl stop 53
 vzctl mount 53
 cd /vz/root/53
-tar --numeric-owner -czf /root/apache22-php53.tar.gz .
+tar --numeric-owner -czf /root/apache22-php53-$(date +%s).tar.gz .
 cd
 vzctl umount 53
