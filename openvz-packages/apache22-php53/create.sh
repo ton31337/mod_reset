@@ -19,4 +19,4 @@ vzctl exec 53 rm -rf /root/mod_reset || exit 1
 vzctl exec 53 rm -rf /root/mod_rpaf || exit 1
 vzctl stop 53 || exit 1
 vzctl mount 53 || exit 1
-cd /vz/root/53 && tar --numeric-owner -czf /root/apache22-php53-$(date +%s).tar.gz . || exit 1
+cd /vz/root/53 && tar --numeric-owner -czf /vz/template/cache/apache22-php53-$(date +%s).tar.gz . || exit 1
