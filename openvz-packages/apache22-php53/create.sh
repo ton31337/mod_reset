@@ -1,8 +1,8 @@
 vzctl destroy 53 || exit 1
 vzctl create 53 --ostemplate centos-6-x86_64 --ipadd 192.168.0.53 || exit 1
 vzctl start 53 || exit 1
-vzctl exec 53 'yum clean all ; yum update -y' || exit 1
-vzctl exec 53 yum install git httpd httpd-devel php php-devel gcc make sssd -y || exit 1
+vzctl exec 53 'yum clean all ; yum update -y ; yum install epel-release' || exit 1
+vzctl exec 53 yum install git httpd httpd-devel php php-devel gcc make sssd mod_ruid2 -y || exit 1
 vzctl exec 53 'cd /root ; git clone https://github.com/hostinger/mod_reset.git' || exit 1
 vzctl exec 53 'cd /root/mod_reset ; make' || exit 1
 vzctl exec 53 chkconfig httpd on || exit 1
