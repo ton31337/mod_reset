@@ -26,6 +26,7 @@ typedef struct {
         apr_table_t   *php_ini;
         char          *admin;
         char          *docroot;
+        char          *tmpdir;
         int           nheaders;
 #ifdef MOD_RUID2
         char          *ruid_uid;

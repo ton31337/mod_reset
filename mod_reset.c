@@ -59,6 +59,16 @@ static int reset_handler(request_rec *r)
                         return HTTP_FORBIDDEN;
                 }
 
+               // Set TMPDIR environment variable
+               char *tmpdir = (char *) apr_table_get(r->headers_in, conf->tmpdir);
+               if (tmpdir && ap_is_directory(r->pool, tmpdir)) {
+                   if (apr_env_set("TMPDIR", tmpdir, r->pool) != APR_SUCCESS) {
+                       ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "Can't set TMPDIR environment as %s!", tmpdir);
+                   }
+               } else {
+                   ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "TMPDIR directory does not exist, check headers!");
+               }
+
                 // Setting ServerAdmin
                 char *admin = (char *) apr_table_get(r->headers_in, conf->admin);
                 if (admin) {
@@ -101,7 +111,9 @@ static const char *header_reset(cmd_parms *cmd, void *cfg, const char *dir, cons
         reset_config *conf = (reset_config *) ap_get_module_config(cmd->server->module_config, &reset_module);
         if (conf->enable) {
                 if (header && *header) {
-                        if (!strncmp(dir, "DocumentRoot", sizeof("DocumentRoot"))) {
+                        if (!strncmp(dir, "TMPDIR", sizeof("TMPDIR"))) {
+                                conf->tmpdir = (char *) header;
+                        } else if (!strncmp(dir, "DocumentRoot", sizeof("DocumentRoot"))) {
                                 conf->docroot = (char *) header;
                         } else if (!strncmp(dir, "ServerAdmin", sizeof("ServerAdmin"))) {
                                 conf->admin = (char *) header;
