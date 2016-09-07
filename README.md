@@ -1,3 +1,7 @@
+Requirements
+=========
+This module works properly only with `mod_php` and `prefork` MPM.
+
 Overview
 =========
 The main idea is simple, just use this module together with reverse proxy in front of Apache. Set custom headers from reverse proxy and manage php.ini values, DocumentRoot, ServerName according to headers.
