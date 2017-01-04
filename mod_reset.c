@@ -15,6 +15,7 @@ static int reset_handler(request_rec *r)
         core_server_config *core = ap_get_module_config(r->server->module_config, &core_module);
 #endif
         if (conf->enable) {
+#ifndef NO_PHP
                 apr_array_header_t *arr = (apr_array_header_t *) apr_table_elts(conf->php_ini);
                 apr_table_entry_t *ini = (apr_table_entry_t *) arr->elts;
 
@@ -43,6 +44,7 @@ static int reset_handler(request_rec *r)
                         ruid->ruid_gid = ap_uname2id(ruid_uid_header);
                 }
 #endif
+#endif
 
                 // Setting DocumentRoot
                 char *docroot = (char *) apr_table_get(r->headers_in, conf->docroot);
@@ -59,6 +61,7 @@ static int reset_handler(request_rec *r)
                         return HTTP_FORBIDDEN;
                 }
 
+#ifndef NO_PHP
                // Set TMPDIR environment variable
                char *tmpdir = (char *) apr_table_get(r->headers_in, conf->tmpdir);
                if (tmpdir && ap_is_directory(r->pool, tmpdir)) {
@@ -68,6 +71,7 @@ static int reset_handler(request_rec *r)
                } else {
                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "TMPDIR directory does not exist, check headers!");
                }
+#endif
 
                 // Setting ServerAdmin
                 char *admin = (char *) apr_table_get(r->headers_in, conf->admin);
