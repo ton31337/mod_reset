@@ -12,6 +12,7 @@ Compile
 ```
 make
 make ruid (with mod_ruid2 support)
+make nophp (without php support)
 make clean
 ```
 
