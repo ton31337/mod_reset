@@ -28,6 +28,7 @@ Configuration
 ==============
 ```
 Reset On
+ResetDenyHeader       "X-Custom-Header"
 ResetHeaders          "open_basedir"    "X-Document-Root"
 ResetHeaders          "upload_tmp_dir"  "X-Tmp-Dir"
 ResetHeader           "ServerAdmin"     "X-Server-Admin"

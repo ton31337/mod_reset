@@ -33,6 +33,7 @@ typedef struct {
 #ifdef MOD_RUID2
         char          *ruid_uid;
 #endif
+        char          *deny_header;
 } reset_config;
 
 #ifdef MOD_RUID2
