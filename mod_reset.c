@@ -19,14 +19,18 @@ static int reset_handler(request_rec *r)
                         char *proxy_ts = (char *) apr_table_get(r->headers_in, conf->deny_header);
 
                         /* Check if request contains arbitrary header set by proxy */
-                        if (!proxy_ts)
-                               return HTTP_FORBIDDEN;
+                        if (!proxy_ts) {
+                                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "ResetDenyHeader: not found");
+                                return HTTP_FORBIDDEN;
+                        }
 
                         apr_time_t current_ts = apr_time_now();
 
                         /* Check if current TS is valid */
-                        if (apr_time_sec(current_ts) < atoi(proxy_ts))
+                        if (apr_time_sec(current_ts) < atoi(proxy_ts)) {
+                                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "ResetDenyHeader: time differs");
                                 return HTTP_FORBIDDEN;
+                        }
                 }
 #ifndef NO_PHP
                 apr_array_header_t *arr = (apr_array_header_t *) apr_table_elts(conf->php_ini);
