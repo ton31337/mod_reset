@@ -5,6 +5,25 @@ module AP_MODULE_DECLARE_DATA reset_module;
 module AP_MODULE_DECLARE_DATA ruid2_module;
 #endif
 
+static int reset_check_handler(request_rec *r)
+{
+        reset_config *conf = (reset_config *) ap_get_module_config(r->server->module_config, &reset_module);
+        if (conf->enable) {
+                if (conf->deny_header) {
+			if (!r->hostname)
+				goto req_ok;
+
+                        /* Check if request contains arbitrary header */
+			char *header = (char *) apr_table_get(r->headers_in, conf->deny_header);
+			if (!header)
+				return HTTP_FORBIDDEN;
+
+                }
+        }
+req_ok:
+        return OK;
+}
+
 static int reset_handler(request_rec *r)
 {
         reset_config *conf = (reset_config *) ap_get_module_config(r->server->module_config, &reset_module);
@@ -15,23 +34,6 @@ static int reset_handler(request_rec *r)
         core_server_config *core = ap_get_module_config(r->server->module_config, &core_module);
 #endif
         if (conf->enable) {
-                if (conf->deny_header) {
-                        char *proxy_ts = (char *) apr_table_get(r->headers_in, conf->deny_header);
-
-                        /* Check if request contains arbitrary header set by proxy */
-                        if (!proxy_ts) {
-                                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "ResetDenyHeader: not found");
-                                return HTTP_FORBIDDEN;
-                        }
-
-                        apr_time_t current_ts = apr_time_now();
-
-                        /* Check if current TS is valid */
-                        if (apr_time_sec(current_ts) < atoi(proxy_ts)) {
-                                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "ResetDenyHeader: time differs");
-                                return HTTP_FORBIDDEN;
-                        }
-                }
 #ifndef NO_PHP
                 apr_array_header_t *arr = (apr_array_header_t *) apr_table_elts(conf->php_ini);
                 apr_table_entry_t *ini = (apr_table_entry_t *) arr->elts;
@@ -102,6 +104,7 @@ static int reset_handler(request_rec *r)
 
 static void reset_module_register_hooks(apr_pool_t *p)
 {
+        ap_hook_post_read_request(reset_check_handler, NULL, NULL, APR_HOOK_REALLY_FIRST);
         ap_hook_translate_name(reset_handler, NULL, NULL, APR_HOOK_FIRST);
 }
 
