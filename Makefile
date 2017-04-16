@@ -4,6 +4,8 @@ INCLUDES = /usr/include/php/main /usr/include/php/Zend /usr/include/php/TSRM
 
 main:
 	$(APXS) -c -i $(foreach i, $(INCLUDES), -I$i) $(SOURCES)
+debug:
+	$(APXS) -c -Wc,-O0 -i $(foreach i, $(INCLUDES), -I$i) $(SOURCES)
 ruid:
 	$(APXS) $(foreach m, MOD_RUID2, -D$m) -c -i $(foreach i, $(INCLUDES), -I$i) $(SOURCES)
 nophp:

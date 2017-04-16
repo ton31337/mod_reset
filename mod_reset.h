@@ -1,6 +1,7 @@
 #define MODULE_NAME "reset"
 #define CORE_PRIVATE
 #include <ap_config.h>
+#include <apr_strings.h>
 #include <httpd.h>
 #include <http_config.h>
 #include <http_core.h>
