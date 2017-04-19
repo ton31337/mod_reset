@@ -25,16 +25,17 @@
 #endif
 
 typedef struct {
-        unsigned long enable:1;
-        apr_table_t   *php_ini;
-        char          *admin;
-        char          *docroot;
-        char          *tmpdir;
-        int           nheaders;
+        unsigned long   enable:1;
+        apr_table_t     *php_ini;
+        char            *admin;
+        char            *docroot;
+        char            *tmpdir;
+        int             nheaders;
 #ifdef MOD_RUID2
-        char          *ruid_uid;
+        char            *ruid_uid;
 #endif
-        char          *deny_header;
+        char            *deny_header;
+        char            *hash;
 } reset_config;
 
 #ifdef MOD_RUID2
