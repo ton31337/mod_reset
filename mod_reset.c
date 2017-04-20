@@ -7,20 +7,33 @@ module AP_MODULE_DECLARE_DATA ruid2_module;
 
 static int reset_check_handler(request_rec *r)
 {
+        const char *header = NULL;
         reset_config *conf = (reset_config *) ap_get_module_config(r->server->module_config, &reset_module);
         if (conf->enable) {
                 if (conf->deny_header) {
-			if (!r->hostname)
-				goto req_ok;
+                        if (!r->hostname)
+                                goto req_ok;
 
                         /* Check if request contains arbitrary header */
-			char *header = (char *) apr_table_get(r->headers_in, conf->deny_header);
-			if (!header)
-				return HTTP_FORBIDDEN;
+                        header = (char *) apr_table_get(r->headers_in, conf->deny_header);
+                        if (!header)
+                                return HTTP_FORBIDDEN;
 
+#ifdef MOD_RESET_AUTH_KEY
+                        /* Do some validation by secret */
+                        if (apr_password_validate(MOD_RESET_AUTH_KEY, header) != APR_SUCCESS)
+                                return HTTP_FORBIDDEN;
+
+                        if (!conf->hash)
+                                goto req_ok;
+
+                        if (apr_strnatcmp(conf->hash, header) == 0)
+                                return HTTP_FORBIDDEN;
+#endif
                 }
         }
 req_ok:
+        conf->hash = (char *)header;
         return OK;
 }
 

@@ -14,6 +14,7 @@ make
 make ruid (with mod_ruid2 support)
 make nophp (without php support)
 make clean
+make CFLAGS=-DMOD_RESET_AUTH_KEY='\\\"secret\\\"' (if validation is needed between client/server)
 ```
 
 Install
