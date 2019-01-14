@@ -90,11 +90,23 @@ static int reset_handler(request_rec *r)
                }
 #endif
 
-                /* Setting ServerAdmin */
-                char *admin = (char *) apr_table_get(r->headers_in, conf->admin);
-                if (admin) {
-                        apr_table_setn(r->subprocess_env, "SERVER_ADMIN", admin);
-                        r->server->server_admin = admin;
+               /* HACK: mod_lsapi uses r->server->server_hostname for socket names:
+                * /var/run/mod_lsapi/lsapi_application-x-httpd-lsphp_100000106_$server_hostname.sock=
+                * Proper solution would be to patch mod_lsapi to use HOST header instead when dynamic
+                * vhosts are in use.
+                */
+               char *hostname = (char *)apr_table_get(r->headers_in, "HOST");
+               if (hostname) {
+                       r->server->server_hostname = hostname;
+                       r->server->is_virtual = 1;
+               }
+
+               /* Setting ServerAdmin */
+               char *admin = (char *)apr_table_get(r->headers_in, conf->admin);
+               if (admin)
+               {
+                       apr_table_setn(r->subprocess_env, "SERVER_ADMIN", admin);
+                       r->server->server_admin = admin;
                 }
         }
         return DECLINED;
